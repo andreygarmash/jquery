@@ -316,7 +316,7 @@ test( "jQuery.Deferred.then - context", function() {
 
 test( "jQuery.when", function() {
 
-	expect( 42 );
+	expect( 41 );
 
 	// Some other objects
 	jQuery.each({
@@ -383,15 +383,18 @@ test( "jQuery.when", function() {
 			new jQuery.Deferred(deferredFunction).promise(),
 			new jQuery.Deferred(deferredFunction).promise()];
 
-	jQuery.when(deferredsArray).done(function(r1, r2, r3){
-		console.log(typeof(arguments));
+	jQuery.when(deferredsArray).done(function(){
+		console.log(JSON.stringify(arguments));
 
-		ok(strictEqual(arguments.length, 3), "Passed correct amount of arguments from deferreds array");
+		ok(strictEqual(arguments[0].length, 3), "Passed correct amount of arguments from deferreds array");
 
-		ok(strictEqual(arguments.reduce(function(previous, value){
-			console.log(previous && value);
-			return previous && value;
-		}), true), "Passed correct arguments from deferreds array functions");
+        var accumulatedResult = true;
+
+        for(var index = 0; index < arguments.lemgth; index++){
+            accumulatedResult = accumulatedResult && arguments[index];
+        }
+
+		ok(strictEqual(accumulatedResult, true), "Passed correct arguments from deferreds array functions");
 	});
 });
 
