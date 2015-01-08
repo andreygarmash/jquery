@@ -316,7 +316,7 @@ test( "jQuery.Deferred.then - context", function() {
 
 test( "jQuery.when", function() {
 
-	expect( 37 );
+	expect( 42 );
 
 	// Some other objects
 	jQuery.each({
@@ -330,7 +330,6 @@ test( "jQuery.when", function() {
 		"undefined": undefined,
 		"a plain object": {},
 		"an array": [ 1, 2, 3 ]
-
 	}, function( message, value ) {
 		ok(
 			jQuery.isFunction(
@@ -371,6 +370,28 @@ test( "jQuery.when", function() {
 			cache = value;
 		});
 
+	});
+
+	var deferredFunction = function(deferred){
+		setTimeout(function(){
+			deferred.resolve(true);
+		}, 0);
+	};
+
+	var deferredsArray = [
+			new jQuery.Deferred(deferredFunction).promise(),
+			new jQuery.Deferred(deferredFunction).promise(),
+			new jQuery.Deferred(deferredFunction).promise()];
+
+	jQuery.when(deferredsArray).done(function(r1, r2, r3){
+		console.log(typeof(arguments));
+
+		ok(strictEqual(arguments.length, 3), "Passed correct amount of arguments from deferreds array");
+
+		ok(strictEqual(arguments.reduce(function(previous, value){
+			console.log(previous && value);
+			return previous && value;
+		}), true), "Passed correct arguments from deferreds array functions");
 	});
 });
 
